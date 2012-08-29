@@ -1,0 +1,3 @@
+This is the new feature that is part of the feature-XYZ branch!
+
+This is a bug fix that needed to be done on the release branch...
