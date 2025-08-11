@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Donate • Make an Impact</title>
+
+    <meta name="description" content="Support our mission with a secure, modern donation experience." />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Tailwind via CDN (utilities used inline) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#eef6ff',
+                100: '#d9ebff',
+                200: '#b9d8ff',
+                300: '#8dbdff',
+                400: '#5a9bff',
+                500: '#2f79ff',
+                600: '#1a5ee6',
+                700: '#1449b4',
+                800: '#123d94',
+                900: '#112f70',
+              },
+              accent: '#00d1b2',
+            },
+            boxShadow: {
+              floating: '0 10px 30px -12px rgba(0,0,0,0.35)',
+              insetGlow: 'inset 0 1px 0 rgba(255,255,255,0.25)',
+            },
+            backdropBlur: {
+              xs: '2px',
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root {
+        --radius: 14px;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 10px 30px -12px rgba(0,0,0,0.35);
+        border: 1px solid rgba(255,255,255,0.18);
+        backdrop-filter: blur(10px);
+      }
+      .glass-light {
+        background: rgba(255, 255, 255, 0.65);
+        box-shadow: 0 10px 30px -12px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.65);
+        backdrop-filter: blur(8px);
+      }
+      .focus-ring {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(47, 121, 255, 0.2);
+      }
+      .pattern {
+        background-image:
+          radial-gradient(1200px 600px at 100% 0%, rgba(47,121,255,0.18), rgba(47,121,255,0) 40%),
+          radial-gradient(900px 450px at 0% 100%, rgba(0,209,178,0.20), rgba(0,209,178,0) 40%),
+          radial-gradient(700px 350px at 0% 0%, rgba(255, 255, 255, 0.2), rgba(255,255,255,0) 40%);
+      }
+      .dark .glass { background: rgba(17, 24, 39, 0.55); border-color: rgba(255,255,255,0.12); }
+      .dark .glass-light { background: rgba(17,24,39,0.85); border-color: rgba(255,255,255,0.08); }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-slate-900 text-slate-100 antialiased pattern">
+    <div class="absolute inset-0 -z-10">
+      <div class="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary-500 opacity-20 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-32 -right-32 h-[28rem] w-[28rem] rounded-full bg-accent opacity-20 blur-3xl"></div>
+    </div>
+
+    <header class="max-w-6xl mx-auto px-4 pt-10 md:pt-14">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary-400 to-accent flex items-center justify-center shadow-floating">
+            <!-- Logo Icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-white">
+              <path d="M12 3l2.832 5.744 6.34.921-4.586 4.47 1.082 6.315L12 17.771 6.332 20.45l1.082-6.315L2.828 9.665l6.34-.921L12 3z" fill="currentColor" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-white text-lg font-semibold">Ripple</p>
+            <p class="text-slate-300 text-sm">Every gift creates waves of change</p>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center gap-3 text-slate-300">
+          <a href="#impact" class="hover:text-white transition">Impact</a>
+          <a href="#faq" class="hover:text-white transition">FAQ</a>
+          <a href="#contact" class="hover:text-white transition">Contact</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
+        <!-- Donation Card -->
+        <section aria-labelledby="donation-title" class="glass-light rounded-2xl p-6 md:p-8">
+          <h1 id="donation-title" class="text-2xl md:text-3xl font-bold text-white">
+            Make a Donation
+          </h1>
+          <p class="text-slate-300 mt-1">
+            100% secure • Cancel anytime • Tax-deductible
+          </p>
+
+          <!-- Frequency Toggle -->
+          <div class="mt-6">
+            <div class="inline-flex p-1 rounded-xl bg-slate-800/60 border border-white/10">
+              <button id="btn-once" type="button" class="donation-frequency px-4 py-2 rounded-lg text-sm font-medium text-slate-200 hover:text-white">
+                One-time
+              </button>
+              <button id="btn-monthly" type="button" class="donation-frequency px-4 py-2 rounded-lg text-sm font-medium text-slate-200 hover:text-white">
+                Monthly
+              </button>
+            </div>
+          </div>
+
+          <!-- Amount Presets -->
+          <div class="mt-6">
+            <label class="block text-slate-200 text-sm font-medium mb-2" for="amount-input">
+              Choose amount
+            </label>
+            <div class="grid grid-cols-4 gap-3">
+              <button type="button" data-amount="25" class="amount-option group rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 text-slate-200 px-3 py-3 text-center transition">
+                <span class="block text-lg font-semibold">$25</span>
+                <span class="block text-[11px] text-slate-400 group-hover:text-slate-300">Starter</span>
+              </button>
+              <button type="button" data-amount="50" class="amount-option group rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 text-slate-200 px-3 py-3 text-center transition">
+                <span class="block text-lg font-semibold">$50</span>
+                <span class="block text-[11px] text-slate-400 group-hover:text-slate-300">Booster</span>
+              </button>
+              <button type="button" data-amount="100" class="amount-option group rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 text-slate-200 px-3 py-3 text-center transition">
+                <span class="block text-lg font-semibold">$100</span>
+                <span class="block text-[11px] text-slate-400 group-hover:text-slate-300">Advocate</span>
+              </button>
+              <button type="button" data-amount="250" class="amount-option group rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 text-slate-200 px-3 py-3 text-center transition">
+                <span class="block text-lg font-semibold">$250</span>
+                <span class="block text-[11px] text-slate-400 group-hover:text-slate-300">Champion</span>
+              </button>
+            </div>
+
+            <div class="mt-3 flex items-center gap-3">
+              <div class="flex-1 relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" id="currency-symbol">$</span>
+                <input id="amount-input" inputmode="decimal" pattern="[0-9]*" type="text" placeholder="Custom amount" class="w-full pl-7 pr-12 py-3 rounded-xl bg-slate-900/60 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" id="currency-code">USD</span>
+              </div>
+              <div>
+                <label for="currency-select" class="sr-only">Currency</label>
+                <select id="currency-select" class="rounded-xl bg-slate-900/60 border border-white/10 text-slate-200 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                  <option value="USD" selected>USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-3 flex items-center gap-2">
+              <input id="cover-fee" type="checkbox" class="h-4 w-4 rounded border-slate-500 bg-slate-900/60" />
+              <label for="cover-fee" class="text-sm text-slate-300">I'd like to cover processing fees</label>
+              <span id="fee-amount" class="text-xs text-slate-400 ml-auto hidden">+ $0.00</span>
+            </div>
+          </div>
+
+          <!-- Payment Method Tabs -->
+          <div class="mt-8">
+            <div class="text-slate-200 text-sm font-medium mb-2">Payment method</div>
+            <div class="flex gap-2">
+              <button type="button" data-method="card" class="payment-tab active inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 text-slate-200">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-primary-400"><path d="M3.75 4.5h16.5A2.25 2.25 0 0 1 22.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 17.25V6.75A2.25 2.25 0 0 1 3.75 4.5Zm0 3.75h16.5V6.75H3.75v1.5Zm0 2.25v6.75h16.5V10.5H3.75Z"/></svg>
+                Card
+              </button>
+              <button type="button" data-method="paypal" class="payment-tab inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-slate-900/40 hover:bg-slate-900/60 text-slate-300">
+                <svg viewBox="0 0 36 36" class="w-5 h-5"><path fill="#003087" d="M29.9 7.5c-1.5-1.7-3.9-2.6-7.1-2.6H11.7c-.9 0-1.7.6-1.9 1.5L6 27.6c-.1.6.4 1.2 1.1 1.2h5.5l1.4-8.8v.1c.2-.9 1-1.5 1.9-1.5h3.9c7.5 0 12.6-3.5 14.2-10 0 0-1.7-1.9-4.1-1.9z"/><path fill="#009CDE" d="M32.1 9.5c-1.6 6.6-6.7 10-14.2 10h-3.9c-.9 0-1.7.6-1.9 1.5l-1.6 10h4.7l.9-5.5v.1c.2-.9 1-1.5 1.9-1.5h2.4c6.4 0 11.3-2.6 13-9.9 0 0-1.9-2.2-4.3-2.7z"/></svg>
+                PayPal
+              </button>
+              <button type="button" data-method="apple" class="payment-tab inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-slate-900/40 hover:bg-slate-900/60 text-slate-300">
+                <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M16.365 1.43c0 1.14-.436 2.22-1.303 3.13-.78.83-2.026 1.47-3.292 1.37-.13-1.05.377-2.19 1.19-3.02.78-.8 2.14-1.42 3.405-1.48zM20.57 17.16c-.65 1.49-1.45 2.98-2.61 4.24-1.02 1.1-2.28 2.39-3.9 2.42-1.46.04-1.93-.78-3.6-.78-1.66 0-2.17.74-3.61.82-1.49.07-2.63-1.2-3.66-2.3C.78 19.32-.94 14.68 1.22 10.94c.87-1.5 2.44-2.44 4.15-2.48 1.49-.04 2.88.92 3.8.92.92 0 2.63-1.13 4.45-1 .75.03 2.86.31 4.21 2.35-3.43 2.03-2.87 6.44.74 7.43z"/></svg>
+                Apple&nbsp;Pay
+              </button>
+            </div>
+
+            <!-- Card Form -->
+            <form id="donation-form" class="mt-5 space-y-4" novalidate>
+              <div id="payment-card" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="card-name" class="block text-sm text-slate-300 mb-1">Name on card</label>
+                    <input id="card-name" name="cardName" type="text" autocomplete="cc-name" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Jane Q. Donor" />
+                  </div>
+                  <div>
+                    <label for="card-number" class="block text-sm text-slate-300 mb-1">Card number</label>
+                    <div class="relative">
+                      <input id="card-number" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 pr-12 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="4242 4242 4242 4242" />
+                      <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <svg viewBox="0 0 36 24" class="h-5 w-8" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="36" height="24" rx="4" fill="#1F2937"/>
+                          <circle cx="14" cy="12" r="5" fill="#F59E0B"/>
+                          <circle cx="22" cy="12" r="5" fill="#EF4444" fill-opacity="0.8"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                  <div class="col-span-1">
+                    <label for="card-exp" class="block text-sm text-slate-300 mb-1">Expiry</label>
+                    <input id="card-exp" name="cardExp" inputmode="numeric" maxlength="5" autocomplete="cc-exp" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="MM/YY" />
+                  </div>
+                  <div class="col-span-1">
+                    <label for="card-cvc" class="block text-sm text-slate-300 mb-1">CVC</label>
+                    <input id="card-cvc" name="cardCvc" inputmode="numeric" maxlength="4" autocomplete="cc-csc" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="123" />
+                  </div>
+                  <div class="col-span-1">
+                    <label for="zip" class="block text-sm text-slate-300 mb-1">ZIP / Postal code</label>
+                    <input id="zip" name="zip" autocomplete="postal-code" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="12345" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Donor Info -->
+              <div class="pt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="first-name" class="block text-sm text-slate-300 mb-1">First name</label>
+                  <input id="first-name" name="firstName" autocomplete="given-name" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Jane" />
+                </div>
+                <div>
+                  <label for="last-name" class="block text-sm text-slate-300 mb-1">Last name</label>
+                  <input id="last-name" name="lastName" autocomplete="family-name" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Doe" />
+                </div>
+                <div class="md:col-span-2">
+                  <label for="email" class="block text-sm text-slate-300 mb-1">Email</label>
+                  <input id="email" name="email" type="email" autocomplete="email" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="jane@example.com" />
+                </div>
+                <div class="md:col-span-2">
+                  <label for="message" class="block text-sm text-slate-300 mb-1">Message (optional)</label>
+                  <textarea id="message" name="message" rows="3" class="w-full rounded-xl bg-slate-900/60 border border-white/10 px-3 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Leave a note with your donation"></textarea>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2">
+                <input id="terms" type="checkbox" class="h-4 w-4 rounded border-slate-500 bg-slate-900/60" />
+                <label for="terms" class="text-sm text-slate-300">I agree to the Terms and Privacy Policy</label>
+              </div>
+
+              <div class="flex items-center justify-between pt-2">
+                <div class="text-sm text-slate-400">
+                  By donating you consent to receive a receipt via email.
+                </div>
+                <button id="submit-btn" type="submit" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold shadow-floating hover:from-primary-400 hover:to-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                  <span>Donate now</span>
+                  <svg id="submit-spinner" class="hidden animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                </button>
+              </div>
+
+              <p id="form-error" class="hidden text-sm text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2"></p>
+            </form>
+          </div>
+        </section>
+
+        <!-- Summary / Impact -->
+        <aside class="glass rounded-2xl p-6 md:p-8 text-slate-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Your impact</h2>
+            <span class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-primary-500/15 text-primary-200 border border-primary-500/20">
+              <span class="h-2 w-2 rounded-full bg-primary-400"></span>
+              Live preview
+            </span>
+          </div>
+
+          <div class="mt-6 space-y-3 text-slate-300">
+            <div class="flex items-center justify-between">
+              <span>Donation</span>
+              <span id="summary-amount" class="font-semibold text-white">$50.00</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Frequency</span>
+              <span id="summary-frequency" class="text-slate-200">One-time</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Processing fees</span>
+              <span id="summary-fee" class="text-slate-400">—</span>
+            </div>
+            <div class="border-t border-white/10 pt-3 flex items-center justify-between">
+              <span class="text-white font-semibold">Total</span>
+              <span id="summary-total" class="text-white font-bold text-lg">$50.00</span>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-3 gap-4">
+            <div class="rounded-xl bg-slate-800/60 border border-white/10 p-4">
+              <div class="text-2xl font-bold text-white" id="impact-one">200+</div>
+              <div class="text-xs text-slate-400 mt-1">liters of clean water</div>
+            </div>
+            <div class="rounded-xl bg-slate-800/60 border border-white/10 p-4">
+              <div class="text-2xl font-bold text-white" id="impact-two">3</div>
+              <div class="text-xs text-slate-400 mt-1">meals for a family</div>
+            </div>
+            <div class="rounded-xl bg-slate-800/60 border border-white/10 p-4">
+              <div class="text-2xl font-bold text-white" id="impact-three">1</div>
+              <div class="text-xs text-slate-400 mt-1">hour of tutoring</div>
+            </div>
+          </div>
+
+          <div class="mt-8 bg-slate-800/50 border border-white/10 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-accent mt-[2px]"><path fill-rule="evenodd" d="M12 2.25c-5.384 0-9.75 4.366-9.75 9.75s4.366 9.75 9.75 9.75 9.75-4.366 9.75-9.75S17.384 2.25 12 2.25zm.75 6.75a.75.75 0 00-1.5 0v4.5c0 .414.336.75.75.75h3a.75.75 0 000-1.5h-2.25V9z" clip-rule="evenodd"/></svg>
+              <p class="text-sm text-slate-300">Recurring donations create reliable support. Switch to monthly to help us plan long‑term programs.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Success Modal -->
+      <div id="success-modal" class="hidden fixed inset-0 z-50 items-center justify-center">
+        <div class="absolute inset-0 bg-slate-900/70"></div>
+        <div class="relative glass-light rounded-2xl p-6 md:p-8 w-[92%] max-w-lg">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-green-400" fill="currentColor"><path fill-rule="evenodd" d="M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5zM16.28 9.22a.75.75 0 00-1.06-1.06L10.5 12.88l-1.72-1.72a.75.75 0 10-1.06 1.06l2.25 2.25a.75.75 0 001.06 0l5.25-5.25z" clip-rule="evenodd"/></svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Thank you for your gift!</h3>
+          </div>
+          <p class="mt-3 text-slate-300 text-sm">
+            A receipt has been sent to <span id="receipt-email" class="text-white font-medium">your email</span>. Transaction ID <span id="receipt-id" class="text-white font-mono">—</span>.
+          </p>
+          <div class="mt-6 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-xl bg-slate-800/60 border border-white/10 p-3">
+              <div class="text-slate-400">Amount</div>
+              <div id="receipt-amount" class="text-white font-semibold text-lg">$0.00</div>
+            </div>
+            <div class="rounded-xl bg-slate-800/60 border border-white/10 p-3">
+              <div class="text-slate-400">Frequency</div>
+              <div id="receipt-frequency" class="text-white font-semibold">—</div>
+            </div>
+          </div>
+          <div class="mt-6 flex items-center justify-end gap-3">
+            <button id="close-modal" class="px-4 py-2 rounded-lg bg-slate-800/60 border border-white/10 text-slate-200 hover:bg-slate-800">Close</button>
+            <a href="#impact" class="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-500">See your impact</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="max-w-6xl mx-auto px-4 pb-10 text-slate-400 text-sm">
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-start md:items-center gap-3 justify-between">
+        <p>© <span id="year"></span> Ripple Foundation. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:text-white">Terms</a>
+          <a href="#" class="hover:text-white">Privacy</a>
+          <a href="#" class="hover:text-white">Security</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Utility: format currency based on ISO code
+      function formatCurrency(value, currencyCode) {
+        const amount = Number(value || 0);
+        try {
+          return new Intl.NumberFormat(undefined, { style: 'currency', currency: currencyCode, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+        } catch {
+          const symbol = currencyCode === 'EUR' ? '€' : currencyCode === 'GBP' ? '£' : '$';
+          return symbol + amount.toFixed(2);
+        }
+      }
+
+      function getCurrencySymbol(code) {
+        switch (code) {
+          case 'EUR': return '€';
+          case 'GBP': return '£';
+          default: return '$';
+        }
+      }
+
+      // State
+      const state = {
+        currency: 'USD',
+        frequency: 'once', // 'once' | 'monthly'
+        baseAmount: 50,
+        coverFee: false,
+        feePercent: 0.029,
+        feeFixed: 0.30,
+        method: 'card',
+      };
+
+      // Elements
+      const amountButtons = Array.from(document.querySelectorAll('.amount-option'));
+      const amountInput = document.getElementById('amount-input');
+      const currencySelect = document.getElementById('currency-select');
+      const currencySymbol = document.getElementById('currency-symbol');
+      const currencyCodeEl = document.getElementById('currency-code');
+      const feeCheckbox = document.getElementById('cover-fee');
+      const feeAmountEl = document.getElementById('fee-amount');
+
+      const summaryAmount = document.getElementById('summary-amount');
+      const summaryFee = document.getElementById('summary-fee');
+      const summaryTotal = document.getElementById('summary-total');
+      const summaryFrequency = document.getElementById('summary-frequency');
+
+      const impactOne = document.getElementById('impact-one');
+      const impactTwo = document.getElementById('impact-two');
+      const impactThree = document.getElementById('impact-three');
+
+      const freqOnceBtn = document.getElementById('btn-once');
+      const freqMonthlyBtn = document.getElementById('btn-monthly');
+
+      const paymentTabs = Array.from(document.querySelectorAll('.payment-tab'));
+
+      const form = document.getElementById('donation-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const submitSpinner = document.getElementById('submit-spinner');
+      const formError = document.getElementById('form-error');
+
+      const emailEl = document.getElementById('email');
+      const termsEl = document.getElementById('terms');
+
+      const cardNumber = document.getElementById('card-number');
+      const cardExp = document.getElementById('card-exp');
+      const cardCvc = document.getElementById('card-cvc');
+
+      const successModal = document.getElementById('success-modal');
+      const closeModalBtn = document.getElementById('close-modal');
+
+      const receiptEmail = document.getElementById('receipt-email');
+      const receiptAmount = document.getElementById('receipt-amount');
+      const receiptFrequency = document.getElementById('receipt-frequency');
+      const receiptId = document.getElementById('receipt-id');
+
+      // Initialize UI
+      function selectFrequency(freq) {
+        state.frequency = freq;
+        const isMonthly = freq === 'monthly';
+        freqOnceBtn.classList.toggle('bg-slate-900/80', !isMonthly);
+        freqOnceBtn.classList.toggle('text-white', !isMonthly);
+        freqOnceBtn.classList.toggle('text-slate-200', isMonthly);
+        freqMonthlyBtn.classList.toggle('bg-slate-900/80', isMonthly);
+        freqMonthlyBtn.classList.toggle('text-white', isMonthly);
+        freqMonthlyBtn.classList.toggle('text-slate-200', !isMonthly);
+        summaryFrequency.textContent = isMonthly ? 'Monthly' : 'One-time';
+        updateSummary();
+      }
+
+      function setAmount(amount) {
+        const rounded = Math.max(0, Number(amount || 0));
+        state.baseAmount = rounded;
+        amountInput.value = rounded ? String(rounded) : '';
+        updateSummary();
+      }
+
+      function updateCurrency(code) {
+        state.currency = code;
+        currencySymbol.textContent = getCurrencySymbol(code);
+        currencyCodeEl.textContent = code;
+        updateSummary();
+      }
+
+      function computeFee(amount) {
+        // Solve for gross so donor covers fee: gross = (amount + fixed) / (1 - percent)
+        if (!state.coverFee) return { fee: 0, gross: amount };
+        const gross = (amount + state.feeFixed) / (1 - state.feePercent);
+        const fee = gross - amount;
+        return { fee, gross };
+      }
+
+      function updateImpact(amount) {
+        // Simple illustrative mapping
+        const liters = Math.round(amount * 4);
+        const meals = Math.max(1, Math.floor(amount / 15));
+        const hours = Math.max(1, Math.floor(amount / 50));
+        impactOne.textContent = liters + '+';
+        impactTwo.textContent = String(meals);
+        impactThree.textContent = String(hours);
+      }
+
+      function updateSummary() {
+        const base = Number(state.baseAmount || 0);
+        const { fee, gross } = computeFee(base);
+        const curr = state.currency;
+
+        summaryAmount.textContent = formatCurrency(base, curr);
+        summaryFee.textContent = fee > 0 ? '+' + formatCurrency(fee, curr) : '—';
+        summaryTotal.textContent = formatCurrency(gross, curr);
+
+        feeAmountEl.textContent = fee > 0 ? '+ ' + formatCurrency(fee, curr) : '';
+        feeAmountEl.classList.toggle('hidden', !(fee > 0));
+
+        updateImpact(gross);
+        updatePresetLabels(curr);
+      }
+
+      function updatePresetLabels(curr) {
+        const symbol = getCurrencySymbol(curr);
+        amountButtons.forEach(btn => {
+          const amt = btn.getAttribute('data-amount');
+          const span = btn.querySelector('span');
+          if (span) span.textContent = symbol + amt;
+        });
+      }
+
+      function clearActiveAmountButtons() {
+        amountButtons.forEach(btn => {
+          btn.classList.remove('ring-2', 'ring-primary-500', 'bg-slate-900/80', 'text-white');
+          btn.classList.add('text-slate-200');
+        });
+      }
+
+      amountButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          clearActiveAmountButtons();
+          btn.classList.add('ring-2', 'ring-primary-500', 'bg-slate-900/80', 'text-white');
+          const amount = Number(btn.getAttribute('data-amount'));
+          setAmount(amount);
+        });
+      });
+
+      amountInput.addEventListener('input', () => {
+        clearActiveAmountButtons();
+        const value = amountInput.value.replace(/[^0-9.]/g, '');
+        amountInput.value = value;
+        setAmount(Number(value));
+      });
+
+      currencySelect.addEventListener('change', () => updateCurrency(currencySelect.value));
+
+      feeCheckbox.addEventListener('change', () => {
+        state.coverFee = feeCheckbox.checked;
+        updateSummary();
+      });
+
+      freqOnceBtn.addEventListener('click', () => selectFrequency('once'));
+      freqMonthlyBtn.addEventListener('click', () => selectFrequency('monthly'));
+
+      paymentTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          paymentTabs.forEach(t => {
+            t.classList.toggle('active', t === tab);
+            t.classList.toggle('bg-slate-900/60', t === tab);
+            t.classList.toggle('bg-slate-900/40', t !== tab);
+            t.classList.toggle('text-slate-200', t === tab);
+            t.classList.toggle('text-slate-300', t !== tab);
+          });
+          state.method = tab.getAttribute('data-method');
+        });
+      });
+
+      // Card input formatting
+      cardNumber.addEventListener('input', () => {
+        let digits = cardNumber.value.replace(/\D/g, '').slice(0, 19);
+        const parts = [];
+        for (let i = 0; i < digits.length; i += 4) parts.push(digits.substring(i, i + 4));
+        cardNumber.value = parts.join(' ');
+      });
+
+      cardExp.addEventListener('input', () => {
+        let digits = cardExp.value.replace(/\D/g, '').slice(0, 4);
+        if (digits.length >= 3) {
+          cardExp.value = digits.slice(0, 2) + '/' + digits.slice(2);
+        } else {
+          cardExp.value = digits;
+        }
+      });
+
+      cardCvc.addEventListener('input', () => {
+        cardCvc.value = cardCvc.value.replace(/\D/g, '').slice(0, 4);
+      });
+
+      function validateForm() {
+        formError.classList.add('hidden');
+        const errors = [];
+
+        if (!state.baseAmount || state.baseAmount < 1) errors.push('Please enter a valid donation amount (min 1).');
+
+        const email = emailEl.value.trim();
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) errors.push('Enter a valid email address.');
+
+        if (!termsEl.checked) errors.push('You must agree to the Terms and Privacy Policy.');
+
+        if (state.method === 'card') {
+          const num = cardNumber.value.replace(/\s/g, '');
+          const exp = cardExp.value;
+          const cvc = cardCvc.value;
+          if (num.length < 13) errors.push('Enter a valid card number.');
+          if (!/^(0[1-9]|1[0-2])\/(\d{2})$/.test(exp)) errors.push('Enter a valid expiry as MM/YY.');
+          if (cvc.length < 3) errors.push('CVC must be 3 or 4 digits.');
+        }
+
+        if (errors.length) {
+          formError.textContent = errors[0];
+          formError.classList.remove('hidden');
+          return false;
+        }
+        return true;
+      }
+
+      function setSubmitting(isSubmitting) {
+        submitBtn.disabled = isSubmitting;
+        submitSpinner.classList.toggle('hidden', !isSubmitting);
+        submitBtn.classList.toggle('opacity-70', isSubmitting);
+      }
+
+      function randomId() {
+        const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let id = '';
+        for (let i = 0; i < 10; i++) id += alphabet[Math.floor(Math.random() * alphabet.length)];
+        return id;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        setSubmitting(true);
+        await new Promise(r => setTimeout(r, 1200)); // simulate network
+
+        // Populate receipt
+        receiptEmail.textContent = emailEl.value.trim();
+        receiptAmount.textContent = summaryTotal.textContent;
+        receiptFrequency.textContent = state.frequency === 'monthly' ? 'Monthly' : 'One-time';
+        receiptId.textContent = randomId();
+
+        successModal.classList.remove('hidden');
+        successModal.classList.add('flex');
+        setSubmitting(false);
+      });
+
+      closeModalBtn.addEventListener('click', () => {
+        successModal.classList.add('hidden');
+        successModal.classList.remove('flex');
+      });
+
+      // First paint
+      (function init() {
+        document.getElementById('year').textContent = new Date().getFullYear();
+        // Default selections
+        selectFrequency('once');
+        clearActiveAmountButtons();
+        amountButtons[1].classList.add('ring-2', 'ring-primary-500', 'bg-slate-900/80', 'text-white'); // $50
+        setAmount(50);
+        updateCurrency('USD');
+        updateSummary();
+      })();
+    </script>
+  </body>
+</html>
